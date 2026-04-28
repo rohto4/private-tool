@@ -1,0 +1,66 @@
+{
+  "name": "private-tool",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio",
+    "db:seed": "tsx scripts/seed-sources.ts",
+    "source:check": "tsx scripts/check-sources.ts",
+    "job:hourly": "tsx scripts/run-hourly.ts",
+    "job:daily-summary": "tsx scripts/run-daily-summary.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rohto4/private-tool.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rohto4/private-tool/issues"
+  },
+  "homepage": "https://github.com/rohto4/private-tool#readme",
+  "description": "",
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "@slack/types": "^2.20.1",
+    "@slack/web-api": "^7.15.1",
+    "dotenv": "^17.4.2",
+    "fast-xml-parser": "^5.7.2",
+    "next": "^16.2.4",
+    "pg": "^8.20.0",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "rss-parser": "^3.13.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "@types/pg": "^8.20.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.2.4",
+    "prisma": "^7.8.0",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.5"
+  },
+  "overrides": {
+    "@hono/node-server": "^1.19.13",
+    "postcss": "^8.5.10"
+  }
+}

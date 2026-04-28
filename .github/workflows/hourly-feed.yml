@@ -1,0 +1,28 @@
+name: Hourly Feed
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch:
+
+jobs:
+  hourly-feed:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DATABASE_URL_UNPOOLED: ${{ secrets.DATABASE_URL_UNPOOLED }}
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      SLACK_CHANNEL_FEED_AI: ${{ secrets.SLACK_CHANNEL_FEED_AI }}
+      SLACK_CHANNEL_FEED_TECH: ${{ secrets.SLACK_CHANNEL_FEED_TECH }}
+      SLACK_CHANNEL_FEED_OTHER: ${{ secrets.SLACK_CHANNEL_FEED_OTHER }}
+      MISSKEY_BASE_URL: https://misskey.io
+      MISSKEY_API_TOKEN: ${{ secrets.MISSKEY_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npm run prisma:generate
+      - run: npm run job:hourly

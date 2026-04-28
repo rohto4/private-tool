@@ -1,0 +1,13 @@
+node_modules/
+.next/
+out/
+coverage/
+dist/
+tsconfig.tsbuildinfo
+
+# Keep environment variables out of version control
+.env
+.env.*
+!.env.example
+
+/generated/prisma/

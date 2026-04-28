@@ -1,0 +1,132 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum SourceKind {
+  rss
+}
+
+enum SourceCategory {
+  ai
+  tech
+  other
+}
+
+enum ChannelKey {
+  feed_ai
+  feed_tech
+  feed_other
+}
+
+enum DeliveryType {
+  slack
+  misskey
+}
+
+enum DeliveryStatus {
+  success
+  failed
+  skipped
+}
+
+enum JobTriggerKind {
+  github_actions
+  slack_command
+  local
+}
+
+enum JobStatus {
+  running
+  success
+  failed
+}
+
+model SourceTarget {
+  sourceTargetId   String         @id @default(cuid()) @map("source_target_id")
+  sourceKey        String         @unique @map("source_key")
+  displayName      String         @map("display_name")
+  siteUrl          String         @map("site_url")
+  feedUrl          String         @map("feed_url")
+  sourceKind       SourceKind     @default(rss) @map("source_kind")
+  sourceCategory   SourceCategory @map("source_category")
+  defaultChannelKey ChannelKey    @map("default_channel_key")
+  isActive         Boolean        @default(true) @map("is_active")
+  notes            String?        @db.Text
+  createdAt        DateTime       @default(now()) @map("created_at")
+  updatedAt        DateTime       @updatedAt @map("updated_at")
+
+  feedItems FeedItem[]
+
+  @@map("source_targets")
+}
+
+model FeedItem {
+  feedItemId     String    @id @default(cuid()) @map("feed_item_id")
+  sourceTargetId String    @map("source_target_id")
+  sourceItemId   String?   @map("source_item_id")
+  sourceUrl      String    @map("source_url")
+  normalizedUrl  String    @map("normalized_url")
+  canonicalUrl   String?   @map("canonical_url")
+  title          String
+  description    String?   @db.Text
+  descriptionText String?  @map("description_text") @db.Text
+  author         String?
+  publishedAt    DateTime? @map("published_at")
+  sourceUpdatedAt DateTime? @map("source_updated_at")
+  rawGuid        String?   @map("raw_guid")
+  rawMeta        Json?     @map("raw_meta")
+  titleSignature String?   @map("title_signature")
+  matchedKeywords Json?    @map("matched_keywords")
+  channelKey     ChannelKey @map("channel_key")
+  isSent         Boolean   @default(false) @map("is_sent")
+  sentAt         DateTime? @map("sent_at")
+  skippedAt      DateTime? @map("skipped_at")
+  skipReason     String?   @map("skip_reason")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  sourceTarget SourceTarget @relation(fields: [sourceTargetId], references: [sourceTargetId], onDelete: Cascade)
+  deliveryLogs DeliveryLog[]
+
+  @@index([normalizedUrl])
+  @@index([titleSignature])
+  @@index([isSent, createdAt])
+  @@index([channelKey, createdAt])
+  @@map("feed_items")
+}
+
+model DeliveryLog {
+  deliveryLogId String         @id @default(cuid()) @map("delivery_log_id")
+  feedItemId    String         @map("feed_item_id")
+  deliveryType  DeliveryType   @map("delivery_type")
+  channelKey    ChannelKey?    @map("channel_key")
+  targetId      String?        @map("target_id")
+  status        DeliveryStatus
+  externalTs    String?        @map("external_ts")
+  errorMessage  String?        @map("error_message") @db.Text
+  createdAt     DateTime       @default(now()) @map("created_at")
+
+  feedItem FeedItem @relation(fields: [feedItemId], references: [feedItemId], onDelete: Cascade)
+
+  @@index([feedItemId, deliveryType])
+  @@map("delivery_logs")
+}
+
+model JobRun {
+  jobRunId    String         @id @default(cuid()) @map("job_run_id")
+  jobName     String         @map("job_name")
+  triggerKind JobTriggerKind @map("trigger_kind")
+  status      JobStatus
+  startedAt   DateTime       @default(now()) @map("started_at")
+  finishedAt  DateTime?      @map("finished_at")
+  summary     Json?
+  errorMessage String?       @map("error_message") @db.Text
+
+  @@index([jobName, startedAt])
+  @@map("job_runs")
+}
