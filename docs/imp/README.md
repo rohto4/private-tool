@@ -6,7 +6,9 @@
 
 ## 主要ファイル
 
-- `imp-plan.md`: 現時点で決まっている実装タスク。
+- `imp-plan.md`: 未完了の実装タスク。
+- `imp-comp.md`: 完了済みの実装、確定済み仕様、回答済み判断。
 - `imp-wait.md`: 実装前または実装中に決める必要がある事項。
+- `user-tasks.md`: ユーザ側で実施する作業。
 - `news-bot-status.md`: ニュース/RSS Slack Misskey BOTの進捗。
 - `missing-parts.md`: 実際に動くBOTへ進めるために不足している部品。

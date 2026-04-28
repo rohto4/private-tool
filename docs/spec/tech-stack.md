@@ -36,6 +36,25 @@ GitHub Actions からCLIを実行する。
 - `npm run job:hourly`
 - `npm run job:daily-summary`
 
+### GitHub Actions runtime注意
+
+GitHub Actionsでは、workflow内で指定する `node-version` と、`uses:` で呼ぶGitHub Action自体のruntimeは別物として扱う。
+
+- `actions/setup-node` の `node-version: "22"` は、このPJのnpm scriptを実行するNode.jsバージョン。
+- `actions/checkout` や `actions/setup-node` などのGitHub Action本体は、それぞれのactionが指定するJavaScript runtimeで動く。
+- Node.js 20 actions deprecated警告が出た場合は、まず `uses:` のaction versionを確認する。
+- 2026-04-29時点では、`actions/checkout@v5` と `actions/setup-node@v5` を使い、Node 24 runtime対応版へ寄せる。
+
+参照する場合:
+- GitHub Actionsログで `Node.js 20 actions are deprecated` が出た時。
+- `actions/checkout` / `actions/setup-node` のmajor versionを上げる時。
+- GitHub Actions runnerのNode runtime変更に追随する時。
+
+関連URL:
+- https://github.com/actions/checkout
+- https://github.com/actions/setup-node
+- https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+
 ### Slack手動実行
 
 Slack slash commandはNext.js API endpointで受ける。
