@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import SearchBar from './SearchBar';
 
 export default function ToolsLayout({
   children,
@@ -30,8 +31,8 @@ export default function ToolsLayout({
                 </Link>
               </nav>
             </div>
-            <div className="text-sm text-gray-500">
-              コーディングLLMツール比較サイト
+            <div className="hidden md:block w-64">
+              <SearchBar />
             </div>
           </div>
         </div>
